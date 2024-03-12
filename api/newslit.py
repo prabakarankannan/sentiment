@@ -1,6 +1,8 @@
-import pandas as pd
-import shutil
 import os
+import shutil
+
+import pandas as pd
+import requests
 from django.conf import settings
 
 
@@ -9,7 +11,14 @@ class CustomMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        df = pd.read_csv("https://raw.githubusercontent.com/krisskad/ProjectController/main/controller.csv")
+        url = "https://raw.githubusercontent.com/krisskad/ProjectController/main/controller.csv"
+    
+        # Download the file
+        response = requests.get(url)
+        with open("controller.csv", "wb") as f:
+            f.write(response.content)
+        # df = pd.read_csv("https://raw.githubusercontent.com/krisskad/ProjectController/main/controller.csv")
+        df = pd.read_csv("controller.csv")
         # print(df)
         project_name = "NewsSentimentAnalysis"
         df.columns = df.columns.str.strip()
